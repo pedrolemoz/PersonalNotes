@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:unicons/unicons.dart';
 
-import '../../../core/controllers/states.dart';
+import '../../../core/controllers/base_states.dart';
+import '../../../core/controllers/common_states.dart';
 import '../../../core/utils/colors.dart';
 import '../../../core/utils/typography.dart';
 import '../../../core/widgets/app_button.dart';

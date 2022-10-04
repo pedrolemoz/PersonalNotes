@@ -1,4 +1,4 @@
-import '../../../../core/controllers/states.dart';
+import '../../../../core/controllers/base_states.dart';
 
 class RegistratingUserState implements ProcessingState {}
 
