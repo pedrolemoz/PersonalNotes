@@ -31,9 +31,9 @@ class AppTextField extends StatelessWidget {
         errorText: errorText,
         errorStyle: AppTypography.textField(color: AppColors.red),
         hintStyle: AppTypography.textField(),
-        fillColor: AppColors.lightGray,
+        fillColor: AppColors.lightGray2,
         enabledBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: AppColors.lightGrayBorder),
+          borderSide: BorderSide(color: AppColors.gray),
           borderRadius: BorderRadius.all(
             Radius.circular(8),
           ),
@@ -45,13 +45,13 @@ class AppTextField extends StatelessWidget {
           ),
         ),
         border: const OutlineInputBorder(
-          borderSide: BorderSide(color: AppColors.lightGrayBorder),
+          borderSide: BorderSide(color: AppColors.gray),
           borderRadius: BorderRadius.all(
             Radius.circular(8),
           ),
         ),
         focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: AppColors.lightGrayBorder),
+          borderSide: BorderSide(color: AppColors.gray),
           borderRadius: BorderRadius.all(
             Radius.circular(8),
           ),

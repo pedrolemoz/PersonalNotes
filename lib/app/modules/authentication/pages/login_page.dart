@@ -44,7 +44,7 @@ class LoginPage extends StatelessWidget {
                     backgroundColor: AppColors.blue,
                     content: Text(
                       'Olá, ${state.userName}!',
-                      style: AppTypography.textHeadline(color: AppColors.darkWhite),
+                      style: AppTypography.textHeadline(color: AppColors.lightGray1),
                     ),
                   );
 
@@ -64,7 +64,7 @@ class LoginPage extends StatelessWidget {
                     backgroundColor: AppColors.red,
                     content: Text(
                       snackBarMessage,
-                      style: AppTypography.textHeadline(color: AppColors.darkWhite),
+                      style: AppTypography.textHeadline(color: AppColors.lightGray1),
                     ),
                   );
 
@@ -129,7 +129,7 @@ class LoginPage extends StatelessWidget {
                       alignment: Alignment.center,
                       child: Text(
                         'ou',
-                        style: AppTypography.textHeadline(),
+                        style: AppTypography.textHeadline(color: AppColors.black),
                       ),
                     ),
                     const SizedBox(height: 16),

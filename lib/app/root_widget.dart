@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 import 'core/utils/colors.dart';
-import 'core/utils/typography.dart';
+import 'core/widgets/app_theme.dart';
 
 class RootWidget extends StatelessWidget {
   const RootWidget({super.key});
@@ -20,21 +20,7 @@ class RootWidget extends StatelessWidget {
     return MaterialApp.router(
       title: 'Personal Notes',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        backgroundColor: AppColors.white,
-        scaffoldBackgroundColor: AppColors.white,
-        appBarTheme: AppBarTheme(
-          iconTheme: const IconThemeData(color: AppColors.black),
-          backgroundColor: AppColors.white,
-          titleTextStyle: AppTypography.appBar(),
-          centerTitle: true,
-          elevation: 1,
-          systemOverlayStyle: const SystemUiOverlayStyle(
-            statusBarIconBrightness: Brightness.dark,
-            statusBarColor: AppColors.white,
-          ),
-        ),
-      ),
+      theme: appTheme,
       routeInformationParser: Modular.routeInformationParser,
       routerDelegate: Modular.routerDelegate,
     );
