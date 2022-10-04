@@ -43,7 +43,7 @@ class LoginPage extends StatelessWidget {
                   final successSnackBar = SnackBar(
                     backgroundColor: AppColors.blue,
                     content: Text(
-                      'Bem vindo, ${state.userName}!',
+                      'Olá, ${state.userName}!',
                       style: AppTypography.textHeadline(color: AppColors.darkWhite),
                     ),
                   );
