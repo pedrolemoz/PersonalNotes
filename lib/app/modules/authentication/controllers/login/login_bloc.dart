@@ -3,8 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-import '../../../core/controllers/states.dart';
-import '../../../core/utils/regular_expressions.dart';
+import '../../../../core/controllers/states.dart';
+import '../../../../core/utils/regular_expressions.dart';
 import 'login_events.dart';
 import 'login_states.dart';
 

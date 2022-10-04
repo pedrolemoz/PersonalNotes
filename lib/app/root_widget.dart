@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
-import 'modules/core/utils/colors.dart';
-import 'modules/core/utils/typography.dart';
+import 'core/utils/colors.dart';
+import 'core/utils/typography.dart';
 
 class RootWidget extends StatelessWidget {
   const RootWidget({super.key});
