@@ -1,10 +1,10 @@
 import 'package:bloc/bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../../../core/controllers/base_states.dart';
 import '../../../../core/controllers/common_states.dart';
+import '../../../../core/models/user_model.dart';
 import '../../../../core/utils/regular_expressions.dart';
 import 'login_events.dart';
 import 'login_states.dart';
@@ -36,10 +36,10 @@ class LoginBloc extends Bloc<LoginEvent, AppState> {
         password: event.password,
       );
 
-      final userDataReference = await FirebaseFirestore.instance.collection('data').doc(userCredential.user!.uid).get();
-      final userData = userDataReference.data();
+      final userModel = await UserModel.fromFirebase(userCredential);
+      await userModel.storeUserInLocalStorage();
 
-      emit(SuccessfullyAuthenticatedUserState(userName: userData!['name']));
+      emit(SuccessfullyAuthenticatedUserState(userName: userModel.name));
     } on FirebaseAuthException catch (exception) {
       switch (exception.code) {
         case 'wrong-password':
@@ -75,20 +75,18 @@ class LoginBloc extends Bloc<LoginEvent, AppState> {
 
       final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
 
-      var userDataReference = await FirebaseFirestore.instance.collection('data').doc(userCredential.user!.uid).get();
-      var userData = userDataReference.data();
+      late UserModel userModel;
 
-      if (userData == null) {
-        await FirebaseFirestore.instance
-            .collection('data')
-            .doc(userCredential.user!.uid)
-            .set({'name': googleUser!.displayName, 'email': googleUser.email});
+      if (await UserModel.userExistsInFirebase(userCredential)) {
+        userModel = await UserModel.fromFirebase(userCredential);
+      } else {
+        userModel = UserModel(name: googleUser!.displayName!, email: googleUser.email);
+        await userModel.storeUserInFirebase(userCredential);
       }
 
-      userDataReference = await FirebaseFirestore.instance.collection('data').doc(userCredential.user!.uid).get();
-      userData = userDataReference.data();
+      await userModel.storeUserInLocalStorage();
 
-      emit(SuccessfullyAuthenticatedUserState(userName: userData!['name']));
+      emit(SuccessfullyAuthenticatedUserState(userName: userModel.name));
     } catch (exception) {
       emit(UnableToAuthenticateUserState());
       return;

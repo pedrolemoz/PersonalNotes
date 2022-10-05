@@ -1,10 +1,10 @@
 import 'package:bloc/bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../../../core/controllers/base_states.dart';
 import '../../../../core/controllers/common_states.dart';
+import '../../../../core/models/user_model.dart';
 import '../../../../core/utils/regular_expressions.dart';
 import 'registration_events.dart';
 import 'registration_states.dart';
@@ -39,12 +39,11 @@ class RegistrationBloc extends Bloc<RegistrationEvent, AppState> {
         password: event.password,
       );
 
-      await FirebaseFirestore.instance
-          .collection('data')
-          .doc(userCredential.user!.uid)
-          .set({'name': event.name, 'email': event.email});
+      final userModel = UserModel(name: event.name, email: event.email);
+      await userModel.storeUserInFirebase(userCredential);
+      await userModel.storeUserInLocalStorage();
 
-      emit(SuccessfullyRegistratedUserState(userName: event.name));
+      emit(SuccessfullyRegistratedUserState(userName: userModel.name));
     } on FirebaseAuthException catch (exception) {
       switch (exception.code) {
         case 'wrong-password':
@@ -77,12 +76,11 @@ class RegistrationBloc extends Bloc<RegistrationEvent, AppState> {
 
       final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
 
-      await FirebaseFirestore.instance
-          .collection('data')
-          .doc(userCredential.user!.uid)
-          .set({'name': googleUser!.displayName, 'email': googleUser.email});
+      final userModel = UserModel(name: googleUser!.displayName!, email: googleUser.email);
+      await userModel.storeUserInFirebase(userCredential);
+      await userModel.storeUserInLocalStorage();
 
-      emit(SuccessfullyRegistratedUserState(userName: googleUser.displayName!));
+      emit(SuccessfullyRegistratedUserState(userName: userModel.name));
     } catch (exception) {
       emit(UnableToRegisterUserState());
       return;
