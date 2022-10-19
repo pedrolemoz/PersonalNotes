@@ -41,15 +41,7 @@ class LoginPage extends StatelessWidget {
                 Navigator.of(context, rootNavigator: true).pop();
 
                 if (state is SuccessfullyAuthenticatedUserState) {
-                  final successSnackBar = SnackBar(
-                    backgroundColor: AppColors.blue,
-                    content: Text(
-                      'Olá, ${state.userName}!',
-                      style: AppTypography.textHeadline(color: AppColors.lightGray1),
-                    ),
-                  );
-
-                  ScaffoldMessenger.of(context).showSnackBar(successSnackBar);
+                  Modular.to.navigate('/home');
                 }
 
                 if (state is ErrorState && state is! UserInputErrorState) {
