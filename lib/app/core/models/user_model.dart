@@ -43,6 +43,11 @@ class UserModel {
     return userData != null;
   }
 
+  static Future<bool> userExistsInLocalStorage() async {
+    final box = await Hive.openBox(CacheKeys.appCache);
+    return box.containsKey(CacheKeys.userData);
+  }
+
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;

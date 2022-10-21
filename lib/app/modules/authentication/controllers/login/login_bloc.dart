@@ -2,8 +2,8 @@ import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-import '../../../../core/controllers/base_states.dart';
-import '../../../../core/controllers/common_states.dart';
+import '../../../../core/controllers/base/base_states.dart';
+import '../../../../core/controllers/base/common_states.dart';
 import '../../../../core/models/user_model.dart';
 import '../../../../core/utils/regular_expressions.dart';
 import 'login_events.dart';

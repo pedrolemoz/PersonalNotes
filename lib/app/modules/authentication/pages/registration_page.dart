@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:unicons/unicons.dart';
 
-import '../../../core/controllers/base_states.dart';
-import '../../../core/controllers/common_states.dart';
+import '../../../core/controllers/base/base_states.dart';
+import '../../../core/controllers/base/common_states.dart';
 import '../../../core/utils/colors.dart';
 import '../../../core/utils/typography.dart';
 import '../../../core/widgets/app_button.dart';
@@ -57,15 +57,7 @@ class RegistrationPage extends StatelessWidget {
             Navigator.of(context, rootNavigator: true).pop();
 
             if (state is SuccessfullyRegistratedUserState) {
-              final successSnackBar = SnackBar(
-                backgroundColor: AppColors.blue,
-                content: Text(
-                  'Olá, ${state.userName}!',
-                  style: AppTypography.textHeadline(color: AppColors.lightGray1),
-                ),
-              );
-
-              ScaffoldMessenger.of(context).showSnackBar(successSnackBar);
+              Modular.to.navigate('/home/');
             }
 
             if (state is ErrorState && state is! UserInputErrorState) {

@@ -1,17 +1,14 @@
 import 'package:animations/animations.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
-import 'pages/home_page.dart';
+import 'pages/coordinator_page.dart';
 
-class HomeModule extends Module {
-  @override
-  List<Bind> get binds => [];
-
+class CoordinatorModule extends Module {
   @override
   List<ModularRoute> get routes => [
         ChildRoute(
           '/',
-          child: (_, __) => HomePage(),
+          child: (_, __) => CoordinatorPage(),
           transition: TransitionType.custom,
           customTransition: CustomTransition(
             transitionDuration: const Duration(milliseconds: 400),

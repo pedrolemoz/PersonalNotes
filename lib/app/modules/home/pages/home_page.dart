@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:unicons/unicons.dart';
 
+import '../../../core/controllers/root/root_bloc.dart';
 import '../../../core/utils/colors.dart';
 import '../widgets/note_card.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  final rootBloc = Modular.get<RootBloc>();
 
   @override
   Widget build(BuildContext context) {
