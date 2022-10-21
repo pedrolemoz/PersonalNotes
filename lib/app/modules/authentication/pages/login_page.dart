@@ -41,7 +41,7 @@ class LoginPage extends StatelessWidget {
                 Navigator.of(context, rootNavigator: true).pop();
 
                 if (state is SuccessfullyAuthenticatedUserState) {
-                  Modular.to.navigate('/home/');
+                  Modular.to.navigate('/notes_listing/');
                 }
 
                 if (state is ErrorState && state is! UserInputErrorState) {

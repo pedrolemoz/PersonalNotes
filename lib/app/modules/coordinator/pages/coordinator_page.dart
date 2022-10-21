@@ -28,7 +28,7 @@ class _CoordinatorPageState extends State<CoordinatorPage> {
       bloc: rootBloc,
       listener: (context, state) {
         if (state is UserAuthenticatedState) {
-          Modular.to.navigate('/home/');
+          Modular.to.navigate('/notes_listing/');
         }
 
         if (state is UserNotAuthenticatedState) {

@@ -22,9 +22,10 @@ class AuthenticationModule extends Module {
           customTransition: CustomTransition(
             transitionDuration: const Duration(milliseconds: 400),
             transitionBuilder: (context, animation, secondaryAnimation, child) {
-              return FadeThroughTransition(
+              return SharedAxisTransition(
                 animation: animation,
                 secondaryAnimation: secondaryAnimation,
+                transitionType: SharedAxisTransitionType.horizontal,
                 child: child,
               );
             },
@@ -37,9 +38,10 @@ class AuthenticationModule extends Module {
           customTransition: CustomTransition(
             transitionDuration: const Duration(milliseconds: 400),
             transitionBuilder: (context, animation, secondaryAnimation, child) {
-              return FadeThroughTransition(
+              return SharedAxisTransition(
                 animation: animation,
                 secondaryAnimation: secondaryAnimation,
+                transitionType: SharedAxisTransitionType.horizontal,
                 child: child,
               );
             },
