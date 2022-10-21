@@ -99,7 +99,7 @@ class LoginPage extends StatelessWidget {
                       children: [
                         Expanded(
                           child: AppButton(
-                            onTap: () => Modular.to.pushNamed('/registration/'),
+                            onTap: () => Modular.to.pushNamed('/authentication/registration'),
                             text: 'Cadastre-se',
                           ),
                         ),
