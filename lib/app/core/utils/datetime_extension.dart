@@ -3,5 +3,5 @@ extension DateTimeExtension on DateTime {
 
   String get timeAs24Hours => '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
 
-  String get formattedDateTime => '$timeAs24Hours $asDayMonthYear';
+  String get formattedDateTime => '$asDayMonthYear às $timeAs24Hours';
 }
