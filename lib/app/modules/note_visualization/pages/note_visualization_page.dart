@@ -48,7 +48,7 @@ class NoteVisualizationPage extends StatelessWidget {
             ),
             const Divider(color: AppColors.gray, height: 24, thickness: 1),
             Text(
-              '${noteModel.date.formattedDateTime} por ${noteModel.userModel.name}',
+              noteModel.date.formattedDateTime,
               style: AppTypography.textSubtitle(),
               textAlign: TextAlign.justify,
             ),

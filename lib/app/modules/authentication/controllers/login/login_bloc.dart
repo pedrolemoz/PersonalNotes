@@ -57,7 +57,6 @@ class LoginBloc extends Bloc<LoginEvent, AppState> {
       }
     } catch (exception) {
       emit(UnableToAuthenticateUserState());
-      return;
     }
   }
 
@@ -89,7 +88,6 @@ class LoginBloc extends Bloc<LoginEvent, AppState> {
       emit(SuccessfullyAuthenticatedUserState(userName: userModel.name));
     } catch (exception) {
       emit(UnableToAuthenticateUserState());
-      return;
     }
   }
 }

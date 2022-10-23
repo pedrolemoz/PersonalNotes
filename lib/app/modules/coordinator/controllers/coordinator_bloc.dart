@@ -19,6 +19,5 @@ class CoordinatorBloc extends Bloc<CoordinatorEvent, AppState> {
     }
 
     emit(UserNotAuthenticatedState());
-    return;
   }
 }

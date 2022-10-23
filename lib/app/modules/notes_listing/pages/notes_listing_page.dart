@@ -1,37 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:unicons/unicons.dart';
 
-import '../../../core/models/note_model.dart';
-import '../../../core/models/user_model.dart';
+import '../../../core/controllers/base/base_states.dart';
 import '../../../core/utils/colors.dart';
 import '../../../core/widgets/disable_splash.dart';
+import '../../../core/widgets/warning_message.dart';
+import '../controllers/notes_listing_bloc.dart';
+import '../controllers/notes_listing_events.dart';
+import '../controllers/notes_listing_states.dart';
 import '../widgets/note_card.dart';
+import '../widgets/note_shimmer.dart';
 
-class NotesListingPage extends StatelessWidget {
-  final mockedNotes = List.generate(
-    65,
-    (index) => NoteModel(
-      userModel: const UserModel(email: 'aaa', name: 'Pedro Lemos'),
-      title: 'Nota ${index + 1}',
-      content:
-          '''Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras a pharetra nulla, ac gravida purus. In a tincidunt nibh, ac pharetra enim. Donec eget fringilla nisl. Nam nec fringilla metus. Quisque vel tortor tincidunt, fermentum orci in, luctus ex. Vivamus quis felis sed turpis commodo tristique. Fusce tempus mauris eget porta volutpat. In eleifend, ligula eu rutrum mattis, dolor odio ultricies tellus, sit amet elementum nisi nisl a sem. Praesent quis lorem vitae tellus commodo aliquam vel et erat. Maecenas dapibus elit libero, eu efficitur ipsum facilisis sit amet. Vestibulum ac metus metus. Vestibulum viverra lacinia molestie. Donec venenatis a augue non pulvinar.
+class NotesListingPage extends StatefulWidget {
+  @override
+  State<NotesListingPage> createState() => _NotesListingPageState();
+}
 
-Aliquam erat volutpat. Etiam a ultricies tellus. Fusce vitae lectus ut urna mollis luctus non nec erat. Etiam fermentum risus felis, eget maximus elit dictum et. Morbi fermentum arcu in mauris dictum, at sollicitudin elit malesuada. Vestibulum eget risus ultrices, tristique nibh non, ultrices mi. Vivamus scelerisque turpis nibh, vitae ultrices arcu aliquet et.''',
-      date: DateTime.now(),
-    ),
-  );
+class _NotesListingPageState extends State<NotesListingPage> {
+  final notesListingBloc = Modular.get<NoteListingBloc>();
+
+  @override
+  void initState() {
+    notesListingBloc.add(const GetAllNotes());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
+        onPressed: () => Modular.to.pushNamed('/note_creation/'),
         child: const Icon(
           UniconsLine.plus,
           size: 28,
           color: AppColors.white,
         ),
-        onPressed: () => Modular.to.pushNamed('/note_creation/'),
       ),
       appBar: AppBar(
         title: const Text('Suas Notas'),
@@ -64,15 +69,44 @@ Aliquam erat volutpat. Etiam a ultricies tellus. Fusce vitae lectus ut urna moll
         ],
       ),
       body: DisableSplash(
-        child: ListView.separated(
-          padding: const EdgeInsets.all(32),
-          itemCount: mockedNotes.length,
-          separatorBuilder: (context, index) => const SizedBox(height: 8),
-          itemBuilder: (context, index) {
-            final note = mockedNotes[index];
-            return NoteCard(
-              onTap: () => Modular.to.pushNamed('/note_visualization/', arguments: note),
-              noteModel: note,
+        child: BlocBuilder<NoteListingBloc, AppState>(
+          bloc: notesListingBloc,
+          builder: (context, state) {
+            if (state is GettingAllNotesState || state is InitialState) {
+              return ListView.separated(
+                physics: const NeverScrollableScrollPhysics(),
+                padding: const EdgeInsets.all(32),
+                itemCount: 5,
+                separatorBuilder: (context, index) => const SizedBox(height: 8),
+                itemBuilder: (context, index) => const NoteShimmer(),
+              );
+            }
+
+            if (state is ZeroNotesToShowState) return const WarningMessage(message: 'Nenhuma nota para exibir');
+
+            if (state is UnableToGetNotesState) {
+              return WarningMessage(
+                message: 'Um erro inesperado ocorreu ao obter as suas notas',
+                enableRetry: true,
+                onRetry: () => notesListingBloc.add(const GetAllNotes()),
+              );
+            }
+
+            return RefreshIndicator(
+              color: AppColors.blue,
+              onRefresh: () async => notesListingBloc.add(const RefreshAllNotes()),
+              child: ListView.separated(
+                padding: const EdgeInsets.all(32),
+                itemCount: notesListingBloc.notes.length,
+                separatorBuilder: (context, index) => const SizedBox(height: 8),
+                itemBuilder: (context, index) {
+                  final note = notesListingBloc.notes[index];
+                  return NoteCard(
+                    onTap: () => Modular.to.pushNamed('/note_visualization/', arguments: note),
+                    noteModel: note,
+                  );
+                },
+              ),
             );
           },
         ),

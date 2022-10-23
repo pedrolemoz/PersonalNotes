@@ -58,7 +58,6 @@ class RegistrationBloc extends Bloc<RegistrationEvent, AppState> {
       }
     } catch (exception) {
       emit(UnableToRegisterUserState());
-      return;
     }
   }
 
@@ -83,7 +82,6 @@ class RegistrationBloc extends Bloc<RegistrationEvent, AppState> {
       emit(SuccessfullyRegistratedUserState(userName: userModel.name));
     } catch (exception) {
       emit(UnableToRegisterUserState());
-      return;
     }
   }
 }
