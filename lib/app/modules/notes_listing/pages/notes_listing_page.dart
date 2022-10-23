@@ -67,7 +67,7 @@ Aliquam erat volutpat. Etiam a ultricies tellus. Fusce vitae lectus ut urna moll
         child: ListView.separated(
           padding: const EdgeInsets.all(32),
           itemCount: mockedNotes.length,
-          separatorBuilder: (context, index) => const SizedBox(height: 16),
+          separatorBuilder: (context, index) => const SizedBox(height: 8),
           itemBuilder: (context, index) {
             final note = mockedNotes[index];
             return NoteCard(
