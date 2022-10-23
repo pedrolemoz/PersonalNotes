@@ -13,6 +13,16 @@ class NoteCreationBloc extends Bloc<NoteCreationEvent, AppState> {
   Future<void> _onCreateNewNote(CreateNewNote event, Emitter<AppState> emit) async {
     emit(CreatingNewNoteState());
 
+    if (event.title.isEmpty) {
+      emit(InvalidNoteTitleState());
+      return;
+    }
+
+    if (event.content.isEmpty) {
+      emit(InvalidNoteContentState());
+      return;
+    }
+
     try {
       final noteModel = NoteModel(title: event.title, content: event.content);
       await noteModel.storeNoteInLocalStorage();
