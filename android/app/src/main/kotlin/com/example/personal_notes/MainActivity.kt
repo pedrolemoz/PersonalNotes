@@ -1,4 +1,4 @@
-package com.example.personal_notes
+package com.pedrolemoz.personal_notes
 
 import io.flutter.embedding.android.FlutterActivity
 
