@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:unicons/unicons.dart';
 
-import '../../../core/controllers/root/root_bloc.dart';
 import '../../../core/models/note_model.dart';
 import '../../../core/models/user_model.dart';
 import '../../../core/utils/colors.dart';
@@ -10,7 +9,6 @@ import '../../../core/widgets/disable_splash.dart';
 import '../widgets/note_card.dart';
 
 class NotesListingPage extends StatelessWidget {
-  final rootBloc = Modular.get<RootBloc>();
   final mockedNotes = List.generate(
     65,
     (index) => NoteModel(

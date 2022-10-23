@@ -3,10 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 import '../../../core/controllers/base/base_states.dart';
-import '../../../core/controllers/root/root_bloc.dart';
-import '../../../core/controllers/root/root_events.dart';
-import '../../../core/controllers/root/root_states.dart';
 import '../../../core/utils/typography.dart';
+import '../controllers/coordinator_bloc.dart';
+import '../controllers/coordinator_events.dart';
+import '../controllers/coordinator_states.dart';
 
 class CoordinatorPage extends StatefulWidget {
   @override
@@ -14,18 +14,18 @@ class CoordinatorPage extends StatefulWidget {
 }
 
 class _CoordinatorPageState extends State<CoordinatorPage> {
-  final rootBloc = Modular.get<RootBloc>();
+  final coordinatorBloc = Modular.get<CoordinatorBloc>();
 
   @override
   void initState() {
-    rootBloc.add(const VerifyUserAuthentication());
+    coordinatorBloc.add(const VerifyUserAuthentication());
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<RootBloc, AppState>(
-      bloc: rootBloc,
+    return BlocConsumer<CoordinatorBloc, AppState>(
+      bloc: coordinatorBloc,
       listener: (context, state) {
         if (state is UserAuthenticatedState) {
           Modular.to.navigate('/notes_listing/');

@@ -1,8 +1,8 @@
 import 'package:animations/animations.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
-import 'core/controllers/root/root_bloc.dart';
 import 'modules/authentication/authentication_module.dart';
+import 'modules/coordinator/controllers/coordinator_bloc.dart';
 import 'modules/coordinator/coordinator_module.dart';
 import 'modules/note_creation/note_creation_module.dart';
 import 'modules/note_visualization/note_visualization_module.dart';
@@ -10,7 +10,7 @@ import 'modules/notes_listing/notes_listing_module.dart';
 
 class RootModule extends Module {
   @override
-  List<Bind> get binds => [Bind<RootBloc>((i) => RootBloc(), onDispose: (bloc) => bloc.close())];
+  List<Bind> get binds => [Bind<CoordinatorBloc>((i) => CoordinatorBloc(), onDispose: (bloc) => bloc.close())];
 
   @override
   List<ModularRoute> get routes => [
