@@ -33,7 +33,7 @@ Aliquam erat volutpat. Etiam a ultricies tellus. Fusce vitae lectus ut urna moll
           size: 28,
           color: AppColors.white,
         ),
-        onPressed: () {},
+        onPressed: () => Modular.to.pushNamed('/note_creation/'),
       ),
       appBar: AppBar(
         title: const Text('Suas Notas'),
