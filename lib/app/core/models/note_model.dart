@@ -9,19 +9,19 @@ class NoteModel {
   final String title;
   final String content;
   late final DateTime date;
-  late final String _uuid;
-  final _uuidGenerator = const Uuid();
+  late final String uniqueIdentifier;
+  final _uniqueIdentifierGenerator = const Uuid();
 
-  NoteModel({required this.title, required this.content, DateTime? date, String? uuid}) {
+  NoteModel({required this.title, required this.content, DateTime? date, String? uniqueIdentifier}) {
     this.date = date ?? DateTime.now();
-    _uuid = uuid ?? _uuidGenerator.v4();
+    this.uniqueIdentifier = uniqueIdentifier ?? _uniqueIdentifierGenerator.v4();
   }
 
   Map<String, dynamic> toMap() => {
         'title': title,
         'content': content,
         'date': date.millisecondsSinceEpoch,
-        'uuid': _uuid,
+        'uniqueIdentifier': uniqueIdentifier,
       };
 
   factory NoteModel.fromMap(Map<String, dynamic> map) {
@@ -29,7 +29,7 @@ class NoteModel {
       title: map['title'],
       content: map['content'],
       date: DateTime.fromMillisecondsSinceEpoch(map['date']),
-      uuid: map['uuid'],
+      uniqueIdentifier: map['uniqueIdentifier'],
     );
   }
 
@@ -48,6 +48,16 @@ class NoteModel {
     return List<NoteModel>.from(decodedNotes.map((note) => NoteModel.fromMap(note)));
   }
 
+  Future<void> updateCurrentNoteInLocalStorage() async {
+    final box = await Hive.openBox(CacheKeys.appCache);
+    final currentNotes = await getAllNotesFromLocalStorage();
+    final noteIndex = currentNotes.indexWhere((note) => note.uniqueIdentifier == uniqueIdentifier);
+    if (noteIndex == -1) return;
+    currentNotes[noteIndex] = this;
+    final encodedNotes = currentNotes.map((note) => note.toMap()).toList();
+    await box.put(CacheKeys.userNotes, json.encode(encodedNotes));
+  }
+
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
@@ -56,9 +66,18 @@ class NoteModel {
         other.title == title &&
         other.content == content &&
         other.date == date &&
-        other._uuid == _uuid;
+        other.uniqueIdentifier == uniqueIdentifier;
   }
 
   @override
-  int get hashCode => title.hashCode ^ content.hashCode ^ date.hashCode ^ _uuid.hashCode;
+  int get hashCode => title.hashCode ^ content.hashCode ^ date.hashCode ^ uniqueIdentifier.hashCode;
+
+  NoteModel copyWith({String? title, String? content, DateTime? date}) {
+    return NoteModel(
+      title: title ?? this.title,
+      content: content ?? this.content,
+      date: date ?? this.date,
+      uniqueIdentifier: uniqueIdentifier,
+    );
+  }
 }
