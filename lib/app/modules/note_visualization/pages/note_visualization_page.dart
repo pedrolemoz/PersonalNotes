@@ -8,16 +8,21 @@ import '../../../core/utils/datetime_extension.dart';
 import '../../../core/utils/typography.dart';
 import '../../../core/widgets/disable_splash.dart';
 
-class NoteVisualizationPage extends StatelessWidget {
+class NoteVisualizationPage extends StatefulWidget {
   final NoteModel noteModel;
 
   const NoteVisualizationPage({super.key, required this.noteModel});
 
   @override
+  State<NoteVisualizationPage> createState() => _NoteVisualizationPageState();
+}
+
+class _NoteVisualizationPageState extends State<NoteVisualizationPage> {
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () => Modular.to.pushNamed('/note_creation/', arguments: widget.noteModel),
         child: const Icon(
           UniconsLine.pen,
           size: 28,
@@ -25,7 +30,7 @@ class NoteVisualizationPage extends StatelessWidget {
         ),
       ),
       appBar: AppBar(
-        title: Text(noteModel.title),
+        title: Text(widget.noteModel.title),
         automaticallyImplyLeading: false,
         leading: IconButton(
           tooltip: 'Voltar',
@@ -42,13 +47,13 @@ class NoteVisualizationPage extends StatelessWidget {
           padding: const EdgeInsets.all(32),
           children: [
             Text(
-              noteModel.content,
+              widget.noteModel.content,
               style: AppTypography.textSubtitle(),
               textAlign: TextAlign.justify,
             ),
             const Divider(color: AppColors.gray, height: 24, thickness: 1),
             Text(
-              noteModel.date.formattedDateTime,
+              widget.noteModel.date.formattedDateTime,
               style: AppTypography.textSubtitle(),
               textAlign: TextAlign.justify,
             ),

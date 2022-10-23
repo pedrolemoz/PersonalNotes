@@ -5,6 +5,7 @@ import 'package:unicons/unicons.dart';
 
 import '../../../core/controllers/base/base_states.dart';
 import '../../../core/controllers/base/common_states.dart';
+import '../../../core/models/note_model.dart';
 import '../../../core/utils/colors.dart';
 import '../../../core/utils/typography.dart';
 import '../../../core/widgets/app_button.dart';
@@ -18,17 +19,49 @@ import '../controllers/note_creation_bloc.dart';
 import '../controllers/note_creation_events.dart';
 import '../controllers/note_creation_states.dart';
 
-class NoteCreationPage extends StatelessWidget {
+class NoteCreationPage extends StatefulWidget {
+  final NoteModel? noteModel;
+
+  const NoteCreationPage({super.key, this.noteModel});
+
+  @override
+  State<NoteCreationPage> createState() => _NoteCreationPageState();
+}
+
+class _NoteCreationPageState extends State<NoteCreationPage> {
+  late final bool isEditingAnExistingNote;
   final noteCreationBloc = Modular.get<NoteCreationBloc>();
   final notesListingBloc = Modular.get<NoteListingBloc>();
   final titleTextController = TextEditingController();
   final contentTextController = TextEditingController();
 
   @override
+  void initState() {
+    isEditingAnExistingNote = widget.noteModel != null;
+
+    if (isEditingAnExistingNote) {
+      titleTextController.value = TextEditingValue(
+        text: widget.noteModel!.title,
+        selection: TextSelection.fromPosition(
+          TextPosition(offset: widget.noteModel!.title.length),
+        ),
+      );
+      contentTextController.value = TextEditingValue(
+        text: widget.noteModel!.content,
+        selection: TextSelection.fromPosition(
+          TextPosition(offset: widget.noteModel!.content.length),
+        ),
+      );
+    }
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Criar nota'),
+        title: Text(isEditingAnExistingNote ? 'Editar nota' : 'Criar nota'),
         automaticallyImplyLeading: false,
         leading: IconButton(
           tooltip: 'Voltar',
@@ -45,20 +78,22 @@ class NoteCreationPage extends StatelessWidget {
           child: BlocConsumer<NoteCreationBloc, AppState>(
             bloc: noteCreationBloc,
             listener: (context, state) async {
-              if (state is CreatingNewNoteState) {
+              if (state is ProcessingState) {
                 await showDialog(
                   context: context,
                   barrierDismissible: false,
-                  builder: (context) => const LoadingDialog(text: 'Criando nova nota'),
+                  builder: (context) => LoadingDialog(
+                    text: isEditingAnExistingNote ? 'Editando nota' : 'Criando nova nota',
+                  ),
                 );
                 return;
               }
 
               Navigator.of(context, rootNavigator: true).pop();
 
-              if (state is SuccessfullyCreatedNewNoteState) {
+              if (state is SuccessState) {
                 notesListingBloc.add(const RefreshAllNotes());
-                Modular.to.maybePop();
+                Modular.to.popUntil(ModalRoute.withName('/notes_listing/'));
               }
 
               if (state is ErrorState && state is! UserInputErrorState) {
@@ -91,13 +126,21 @@ class NoteCreationPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   AppButton(
-                    text: 'Criar nova nota',
-                    onTap: () => noteCreationBloc.add(
-                      CreateNewNote(
-                        title: titleTextController.text,
-                        content: contentTextController.text,
-                      ),
-                    ),
+                    text: isEditingAnExistingNote ? 'Editar nota' : 'Criar nova nota',
+                    onTap: () => isEditingAnExistingNote
+                        ? noteCreationBloc.add(
+                            EditCurrentNote(
+                              title: titleTextController.text,
+                              content: contentTextController.text,
+                              noteModel: widget.noteModel!,
+                            ),
+                          )
+                        : noteCreationBloc.add(
+                            CreateNewNote(
+                              title: titleTextController.text,
+                              content: contentTextController.text,
+                            ),
+                          ),
                   ),
                 ],
               );

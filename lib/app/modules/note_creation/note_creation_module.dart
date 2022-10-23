@@ -12,7 +12,7 @@ class NoteCreationModule extends Module {
   List<ModularRoute> get routes => [
         ChildRoute(
           '/',
-          child: (_, __) => NoteCreationPage(),
+          child: (_, args) => NoteCreationPage(noteModel: args.data),
           transition: TransitionType.custom,
           customTransition: CustomTransition(
             transitionDuration: const Duration(milliseconds: 400),

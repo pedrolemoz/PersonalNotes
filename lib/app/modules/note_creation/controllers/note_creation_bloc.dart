@@ -8,6 +8,7 @@ import 'note_creation_states.dart';
 class NoteCreationBloc extends Bloc<NoteCreationEvent, AppState> {
   NoteCreationBloc() : super(InitialState()) {
     on<CreateNewNote>(_onCreateNewNote);
+    on<EditCurrentNote>(_onEditCurrentNote);
   }
 
   Future<void> _onCreateNewNote(CreateNewNote event, Emitter<AppState> emit) async {
@@ -29,6 +30,28 @@ class NoteCreationBloc extends Bloc<NoteCreationEvent, AppState> {
       emit(SuccessfullyCreatedNewNoteState());
     } catch (exception) {
       emit(UnableToCreateNewNoteState());
+    }
+  }
+
+  Future<void> _onEditCurrentNote(EditCurrentNote event, Emitter<AppState> emit) async {
+    emit(EditingCurrentNoteState());
+
+    if (event.title.isEmpty) {
+      emit(InvalidNoteTitleState());
+      return;
+    }
+
+    if (event.content.isEmpty) {
+      emit(InvalidNoteContentState());
+      return;
+    }
+
+    try {
+      final noteModel = event.noteModel.copyWith(title: event.title, content: event.content, date: DateTime.now());
+      await noteModel.updateCurrentNoteInLocalStorage();
+      emit(SuccessfullyEditedCurrentNoteState());
+    } catch (exception) {
+      emit(UnableToEditCurrentNoteState());
     }
   }
 }
