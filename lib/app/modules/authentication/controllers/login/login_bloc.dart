@@ -79,8 +79,12 @@ class LoginBloc extends Bloc<LoginEvent, AppState> {
       if (await UserModel.userExistsInFirebase(userCredential)) {
         userModel = await UserModel.fromFirebase(userCredential);
       } else {
-        userModel = UserModel(name: googleUser!.displayName!, email: googleUser.email);
-        await userModel.storeUserInFirebase(userCredential);
+        userModel = UserModel(
+          name: googleUser!.displayName!,
+          email: googleUser.email,
+          userID: userCredential.user!.uid,
+        );
+        await userModel.storeUserInFirebase();
       }
 
       await userModel.storeUserInLocalStorage();

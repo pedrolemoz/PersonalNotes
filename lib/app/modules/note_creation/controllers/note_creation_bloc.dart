@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 
 import '../../../core/controllers/base/base_states.dart';
 import '../../../core/models/note_model.dart';
+import '../../../core/models/user_model.dart';
 import 'note_creation_events.dart';
 import 'note_creation_states.dart';
 
@@ -27,6 +28,8 @@ class NoteCreationBloc extends Bloc<NoteCreationEvent, AppState> {
     try {
       final noteModel = NoteModel(title: event.title, content: event.content);
       await noteModel.storeNoteInLocalStorage();
+      final userModel = await UserModel.fromLocalStorage();
+      await noteModel.storeNoteInFirebase(userModel);
       emit(SuccessfullyCreatedNewNoteState(createdNoteModel: noteModel));
     } catch (exception) {
       emit(UnableToCreateNewNoteState());
@@ -49,6 +52,8 @@ class NoteCreationBloc extends Bloc<NoteCreationEvent, AppState> {
     try {
       final noteModel = event.noteModel.copyWith(title: event.title, content: event.content, date: DateTime.now());
       await noteModel.updateCurrentNoteInLocalStorage();
+      final userModel = await UserModel.fromLocalStorage();
+      await noteModel.updateCurrentNoteInFirebase(userModel);
       emit(SuccessfullyEditedCurrentNoteState(editedNoteModel: noteModel));
     } catch (exception) {
       emit(UnableToEditCurrentNoteState());

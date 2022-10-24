@@ -3,6 +3,7 @@ import 'package:bloc/bloc.dart';
 import '../../../core/controllers/base/base_states.dart';
 import '../../../core/controllers/base/common_states.dart';
 import '../../../core/models/note_model.dart';
+import '../../../core/models/user_model.dart';
 import 'note_visualization_events.dart';
 import 'note_visualization_states.dart';
 
@@ -33,6 +34,8 @@ class NoteVisualizationBloc extends Bloc<NoteVisualizationEvent, AppState> {
 
     try {
       await noteModel.deleteCurrentNoteFromLocalStorage();
+      final userModel = await UserModel.fromLocalStorage();
+      await noteModel.deleteCurrentNoteFromFirebase(userModel);
       emit(SuccessfullyDeletedCurrentNoteState());
     } catch (exception) {
       emit(UnableToDeleteCurrentNoteState());

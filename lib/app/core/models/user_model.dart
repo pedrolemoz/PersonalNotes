@@ -9,12 +9,17 @@ import '../storage/cache_keys.dart';
 class UserModel {
   final String name;
   final String email;
+  final String userID;
 
-  const UserModel({required this.name, required this.email});
+  const UserModel({required this.name, required this.email, required this.userID});
 
-  Map<String, dynamic> toMap() => {'name': name, 'email': email};
+  Map<String, dynamic> toMap() => {'name': name, 'email': email, 'userID': userID};
 
-  factory UserModel.fromMap(Map<String, dynamic> map) => UserModel(name: map['name'], email: map['email']);
+  factory UserModel.fromMap(Map<String, dynamic> map) => UserModel(
+        name: map['name'],
+        email: map['email'],
+        userID: map['userID'],
+      );
 
   static Future<UserModel> fromFirebase(UserCredential credential) async {
     final userDataReference = await FirebaseFirestore.instance.collection('data').doc(credential.user!.uid).get();
@@ -28,8 +33,8 @@ class UserModel {
     return UserModel.fromMap(userData);
   }
 
-  Future<void> storeUserInFirebase(UserCredential credential) async {
-    await FirebaseFirestore.instance.collection('data').doc(credential.user!.uid).set(toMap());
+  Future<void> storeUserInFirebase() async {
+    await FirebaseFirestore.instance.collection('data').doc(userID).set(toMap());
   }
 
   Future<void> storeUserInLocalStorage() async {
@@ -52,9 +57,9 @@ class UserModel {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is UserModel && other.name == name && other.email == email;
+    return other is UserModel && other.name == name && other.email == email && other.userID == userID;
   }
 
   @override
-  int get hashCode => name.hashCode ^ email.hashCode;
+  int get hashCode => name.hashCode ^ email.hashCode ^ userID.hashCode;
 }

@@ -39,8 +39,12 @@ class RegistrationBloc extends Bloc<RegistrationEvent, AppState> {
         password: event.password,
       );
 
-      final userModel = UserModel(name: event.name, email: event.email);
-      await userModel.storeUserInFirebase(userCredential);
+      final userModel = UserModel(
+        name: event.name,
+        email: event.email,
+        userID: userCredential.user!.uid,
+      );
+      await userModel.storeUserInFirebase();
       await userModel.storeUserInLocalStorage();
 
       emit(SuccessfullyRegistratedUserState(userName: userModel.name));
@@ -75,8 +79,12 @@ class RegistrationBloc extends Bloc<RegistrationEvent, AppState> {
 
       final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
 
-      final userModel = UserModel(name: googleUser!.displayName!, email: googleUser.email);
-      await userModel.storeUserInFirebase(userCredential);
+      final userModel = UserModel(
+        name: googleUser!.displayName!,
+        email: googleUser.email,
+        userID: userCredential.user!.uid,
+      );
+      await userModel.storeUserInFirebase();
       await userModel.storeUserInLocalStorage();
 
       emit(SuccessfullyRegistratedUserState(userName: userModel.name));
