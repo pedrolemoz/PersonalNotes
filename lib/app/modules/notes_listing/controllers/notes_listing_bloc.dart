@@ -41,6 +41,13 @@ class NoteListingBloc extends Bloc<NoteListingEvent, AppState> {
 
       notes = notesFromLocalStorage.toList();
 
+      for (var note in notesFromLocalStorage) {
+        if (!notesFromFirebase.contains(note)) {
+          note.deleteCurrentNoteFromLocalStorage();
+          notes.remove(note);
+        }
+      }
+
       if (notes.isEmpty) {
         emit(ZeroNotesToShowState());
         return;
