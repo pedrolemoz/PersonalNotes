@@ -9,11 +9,13 @@ class AppTextField extends StatelessWidget {
   final bool isPassword;
   final String? errorText;
   final int maxLines;
+  final TextCapitalization capitalization;
 
   const AppTextField({
     super.key,
     required this.hintText,
     required this.controller,
+    this.capitalization = TextCapitalization.none,
     this.isPassword = false,
     this.maxLines = 1,
     this.errorText,
@@ -25,6 +27,7 @@ class AppTextField extends StatelessWidget {
       controller: controller,
       obscureText: isPassword,
       maxLines: maxLines,
+      textCapitalization: capitalization,
       style: AppTypography.textField(),
       decoration: InputDecoration(
         filled: true,

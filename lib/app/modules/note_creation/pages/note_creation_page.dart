@@ -82,9 +82,9 @@ class _NoteCreationPageState extends State<NoteCreationPage> {
                 await showDialog(
                   context: context,
                   barrierDismissible: false,
-                  builder: (context) => LoadingDialog(
-                    text: isEditingAnExistingNote ? 'Editando nota' : 'Criando nova nota',
-                  ),
+                  builder: (context) {
+                    return LoadingDialog(text: isEditingAnExistingNote ? 'Editando nota' : 'Criando nova nota');
+                  },
                 );
                 return;
               }
@@ -115,6 +115,7 @@ class _NoteCreationPageState extends State<NoteCreationPage> {
                   AppTextField(
                     controller: titleTextController,
                     hintText: 'Título',
+                    capitalization: TextCapitalization.sentences,
                     errorText: state is InvalidNoteTitleState ? 'O título inserido não é válido' : null,
                   ),
                   const SizedBox(height: 16),
@@ -122,6 +123,7 @@ class _NoteCreationPageState extends State<NoteCreationPage> {
                     controller: contentTextController,
                     hintText: 'Escreva sua nota aqui',
                     maxLines: 20,
+                    capitalization: TextCapitalization.sentences,
                     errorText: state is InvalidNoteContentState ? 'O conteúdo inserido não é válido' : null,
                   ),
                   const SizedBox(height: 16),

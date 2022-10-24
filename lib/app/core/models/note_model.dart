@@ -58,6 +58,14 @@ class NoteModel {
     await box.put(CacheKeys.userNotes, json.encode(encodedNotes));
   }
 
+  Future<void> deleteCurrentNoteFromLocalStorage() async {
+    final box = await Hive.openBox(CacheKeys.appCache);
+    final currentNotes = await getAllNotesFromLocalStorage();
+    currentNotes.removeWhere((note) => note.uniqueIdentifier == uniqueIdentifier);
+    final encodedNotes = currentNotes.map((note) => note.toMap()).toList();
+    await box.put(CacheKeys.userNotes, json.encode(encodedNotes));
+  }
+
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;

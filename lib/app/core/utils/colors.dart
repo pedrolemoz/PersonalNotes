@@ -12,5 +12,6 @@ class AppColors {
   static const blue = Color(0xFF0A5EC1);
   static const purple = Color(0xFF344188);
   static const googleBlue = Color(0xFF4285F4);
-  static const red = Color(0xFF890615);
+  static const red = Color(0xFFB10909);
+  static const darkRed = Color(0xFF890615);
 }

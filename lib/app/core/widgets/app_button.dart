@@ -26,7 +26,7 @@ class AppButton extends StatelessWidget {
       style: ButtonStyle(
         elevation: MaterialStateProperty.all<double>(0),
         backgroundColor: MaterialStateProperty.all<Color>(color ?? AppColors.blue),
-        overlayColor: MaterialStateProperty.all<Color>(borderColor ?? AppColors.purple),
+        overlayColor: MaterialStateProperty.all<Color>(AppColors.gray.withOpacity(0.2)),
         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
