@@ -27,7 +27,7 @@ class NoteCreationBloc extends Bloc<NoteCreationEvent, AppState> {
     try {
       final noteModel = NoteModel(title: event.title, content: event.content);
       await noteModel.storeNoteInLocalStorage();
-      emit(SuccessfullyCreatedNewNoteState());
+      emit(SuccessfullyCreatedNewNoteState(createdNoteModel: noteModel));
     } catch (exception) {
       emit(UnableToCreateNewNoteState());
     }
@@ -49,7 +49,7 @@ class NoteCreationBloc extends Bloc<NoteCreationEvent, AppState> {
     try {
       final noteModel = event.noteModel.copyWith(title: event.title, content: event.content, date: DateTime.now());
       await noteModel.updateCurrentNoteInLocalStorage();
-      emit(SuccessfullyEditedCurrentNoteState());
+      emit(SuccessfullyEditedCurrentNoteState(editedNoteModel: noteModel));
     } catch (exception) {
       emit(UnableToEditCurrentNoteState());
     }

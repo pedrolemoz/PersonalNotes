@@ -13,6 +13,8 @@ import '../../../core/widgets/app_text_field.dart';
 import '../../../core/widgets/disable_splash.dart';
 import '../../../core/widgets/loading_dialog.dart';
 import '../../../core/widgets/unfocus_widget.dart';
+import '../../note_visualization/controllers/note_visualization_bloc.dart';
+import '../../note_visualization/controllers/note_visualization_events.dart';
 import '../../notes_listing/controllers/notes_listing_bloc.dart';
 import '../../notes_listing/controllers/notes_listing_events.dart';
 import '../controllers/note_creation_bloc.dart';
@@ -93,7 +95,13 @@ class _NoteCreationPageState extends State<NoteCreationPage> {
 
               if (state is SuccessState) {
                 notesListingBloc.add(const RefreshAllNotes());
-                Modular.to.popUntil(ModalRoute.withName('/notes_listing/'));
+
+                if (state is SuccessfullyEditedCurrentNoteState) {
+                  final noteVisualizationBloc = Modular.get<NoteVisualizationBloc>();
+                  noteVisualizationBloc.add(UpdateCurrentNoteInVisualizationBloc(noteModel: state.editedNoteModel));
+                }
+
+                Modular.to.maybePop();
               }
 
               if (state is ErrorState && state is! UserInputErrorState) {
