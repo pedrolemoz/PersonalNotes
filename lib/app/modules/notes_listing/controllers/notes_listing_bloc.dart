@@ -8,6 +8,7 @@ import 'notes_listing_states.dart';
 
 class NoteListingBloc extends Bloc<NoteListingEvent, AppState> {
   NoteListingBloc() : super(InitialState()) {
+    NoteModel.notesSnapshots.listen((snapshot) => add(const RefreshAllNotes()));
     on<GetAllNotes>(_onGetAllNotes);
     on<RefreshAllNotes>(_onRefreshAllNotes);
   }
@@ -18,9 +19,27 @@ class NoteListingBloc extends Bloc<NoteListingEvent, AppState> {
     emit(GettingAllNotesState());
 
     try {
+      final notesFromLocalStorage = await NoteModel.getAllNotesFromLocalStorage();
       final userModel = await UserModel.fromLocalStorage();
-      await NoteModel.getAllNotesFromFirebase(userModel);
-      notes = await NoteModel.getAllNotesFromLocalStorage();
+      final notesFromFirebase = await NoteModel.getAllNotesFromFirebase(userModel);
+
+      for (var note in notesFromFirebase) {
+        if (!notesFromLocalStorage.contains(note)) {
+          final index = notesFromLocalStorage.indexWhere(
+            (noteFromLocalStorage) => noteFromLocalStorage.uniqueIdentifier == note.uniqueIdentifier,
+          );
+
+          if (index == -1) {
+            await note.storeNoteInLocalStorage();
+            notesFromLocalStorage.add(note);
+            continue;
+          }
+
+          notesFromLocalStorage[index] = note;
+        }
+      }
+
+      notes = notesFromLocalStorage.toList();
 
       if (notes.isEmpty) {
         emit(ZeroNotesToShowState());

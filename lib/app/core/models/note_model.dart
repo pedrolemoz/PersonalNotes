@@ -103,6 +103,13 @@ class NoteModel {
     await FirebaseFirestore.instance.collection('notes').doc(userModel.userID).set({'notes': encodedNotes});
   }
 
+  static Stream get notesSnapshots => FirebaseFirestore.instance.collection('notes').snapshots();
+
+  static Future<void> deleteAllNotesFromLocalStorage() async {
+    final box = await Hive.openBox(CacheKeys.appCache);
+    await box.delete(CacheKeys.userNotes);
+  }
+
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
