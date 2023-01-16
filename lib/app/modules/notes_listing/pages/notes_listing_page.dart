@@ -38,36 +38,7 @@ class _NotesListingPageState extends State<NotesListingPage> {
           color: AppColors.white,
         ),
       ),
-      appBar: AppBar(
-        title: const Text('Suas Notas'),
-        automaticallyImplyLeading: false,
-        leading: Builder(
-          builder: (context) {
-            return IconButton(
-              tooltip: 'Abrir menu',
-              splashRadius: 24,
-              onPressed: () => Modular.to.maybePop(),
-              icon: const Icon(
-                UniconsLine.bars,
-                size: 28,
-              ),
-            );
-          },
-        ),
-        actions: [
-          Builder(
-            builder: (context) {
-              return IconButton(
-                tooltip: 'Buscar',
-                splashRadius: 24,
-                onPressed: () => Scaffold.of(context).openEndDrawer(),
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                icon: const Icon(UniconsLine.search),
-              );
-            },
-          )
-        ],
-      ),
+      appBar: AppBar(title: const Text('Suas Notas')),
       body: DisableSplash(
         child: BlocBuilder<NoteListingBloc, AppState>(
           bloc: notesListingBloc,
@@ -82,7 +53,8 @@ class _NotesListingPageState extends State<NotesListingPage> {
               );
             }
 
-            if (state is ZeroNotesToShowState) return const WarningMessage(message: 'Nenhuma nota para exibir');
+            if (state is ZeroNotesToShowState)
+              return const WarningMessage(message: 'Nenhuma nota para exibir');
 
             if (state is UnableToGetNotesState) {
               return WarningMessage(
@@ -94,7 +66,8 @@ class _NotesListingPageState extends State<NotesListingPage> {
 
             return RefreshIndicator(
               color: AppColors.blue,
-              onRefresh: () async => notesListingBloc.add(const RefreshAllNotes()),
+              onRefresh: () async =>
+                  notesListingBloc.add(const RefreshAllNotes()),
               child: ListView.separated(
                 padding: const EdgeInsets.all(32),
                 itemCount: notesListingBloc.notes.length,
@@ -102,7 +75,8 @@ class _NotesListingPageState extends State<NotesListingPage> {
                 itemBuilder: (context, index) {
                   final note = notesListingBloc.notes[index];
                   return NoteCard(
-                    onTap: () => Modular.to.pushNamed('/note_visualization/', arguments: note),
+                    onTap: () => Modular.to
+                        .pushNamed('/note_visualization/', arguments: note),
                     noteModel: note,
                   );
                 },
