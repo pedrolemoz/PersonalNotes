@@ -62,7 +62,9 @@ class NoteListingBloc extends Bloc<NoteListingEvent, AppState> {
   }
 
   Future<void> _onRefreshAllNotes(
-      RefreshAllNotes event, Emitter<AppState> emit) async {
+    RefreshAllNotes event,
+    Emitter<AppState> emit,
+  ) async {
     emit(RefreshingAllNotesState());
     notes.clear();
     add(const GetAllNotes());
