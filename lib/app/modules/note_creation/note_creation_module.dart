@@ -1,18 +1,23 @@
 import 'package:animations/animations.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
-import 'controllers/note_creation_bloc.dart';
-import 'pages/note_creation_page.dart';
+import 'presentation/controllers/note_creation_bloc.dart';
+import 'presentation/pages/note_creation_page.dart';
 
 class NoteCreationModule extends Module {
   @override
-  List<Bind> get binds => [Bind<NoteCreationBloc>((i) => NoteCreationBloc(), onDispose: (bloc) => bloc.close())];
+  List<Bind> get binds => [
+        Bind<NoteCreationBloc>(
+          (i) => NoteCreationBloc(i(), i()),
+          onDispose: (bloc) => bloc.close(),
+        )
+      ];
 
   @override
   List<ModularRoute> get routes => [
         ChildRoute(
           '/',
-          child: (_, args) => NoteCreationPage(noteModel: args.data),
+          child: (_, args) => NoteCreationPage(note: args.data),
           transition: TransitionType.custom,
           customTransition: CustomTransition(
             transitionDuration: const Duration(milliseconds: 400),

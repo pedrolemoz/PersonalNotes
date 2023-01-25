@@ -1,14 +1,14 @@
 import 'package:animations/animations.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
-import 'controllers/note_visualization_bloc.dart';
-import 'pages/note_visualization_page.dart';
+import 'presentation/controllers/note_visualization_bloc.dart';
+import 'presentation/pages/note_visualization_page.dart';
 
 class NoteVisualizationModule extends Module {
   @override
   List<Bind> get binds => [
         Bind<NoteVisualizationBloc>(
-          (i) => NoteVisualizationBloc(),
+          (i) => NoteVisualizationBloc(i()),
           onDispose: (bloc) => bloc.close(),
         ),
       ];
@@ -17,7 +17,7 @@ class NoteVisualizationModule extends Module {
   List<ModularRoute> get routes => [
         ChildRoute(
           '/',
-          child: (_, args) => NoteVisualizationPage(noteModel: args.data),
+          child: (_, args) => NoteVisualizationPage(note: args.data),
           transition: TransitionType.custom,
           customTransition: CustomTransition(
             transitionDuration: const Duration(milliseconds: 400),

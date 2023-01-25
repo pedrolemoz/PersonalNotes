@@ -1,0 +1,1 @@
+class UnableTGenerateIdException implements Exception {}
