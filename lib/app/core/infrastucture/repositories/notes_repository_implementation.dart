@@ -86,6 +86,7 @@ class NotesRepositoryImplementation implements NotesRepository {
       final note = Note(
         title: input.title,
         content: input.content,
+        date: DateTime.now(),
         uniqueIdentifier: id,
       );
 
