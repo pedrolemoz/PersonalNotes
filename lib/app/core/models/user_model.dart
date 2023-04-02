@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hive/hive.dart';
 
 import '../storage/cache_keys.dart';
@@ -51,6 +52,52 @@ class UserModel {
   static Future<bool> userExistsInLocalStorage() async {
     final box = await Hive.openBox(CacheKeys.appCache);
     return box.containsKey(CacheKeys.userData);
+  }
+
+  static Future<UserModel> loginWithCredentials(String email, String password) async {
+    final authenticationService = FirebaseAuth.instance;
+    final userCredential = await authenticationService.signInWithEmailAndPassword(email: email, password: password);
+    final userModel = await UserModel.fromFirebase(userCredential);
+    await userModel.storeUserInLocalStorage();
+    return userModel;
+  }
+
+  static Future<UserModel> registerWithCredentials(String name, String email, String password) async {
+    final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+
+    final userModel = UserModel(name: name, email: email, userID: userCredential.user!.uid);
+    await userModel.storeUserInFirebase();
+    await userModel.storeUserInLocalStorage();
+
+    return userModel;
+  }
+
+  static Future<UserModel> authWithGoogle() async {
+    final googleUser = await GoogleSignIn().signIn();
+    final googleAuthentication = await googleUser?.authentication;
+
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuthentication?.accessToken,
+      idToken: googleAuthentication?.idToken,
+    );
+
+    final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+
+    late UserModel userModel;
+
+    if (await UserModel.userExistsInFirebase(userCredential)) {
+      userModel = await UserModel.fromFirebase(userCredential);
+    } else {
+      userModel = UserModel(name: googleUser!.displayName!, email: googleUser.email, userID: userCredential.user!.uid);
+      await userModel.storeUserInFirebase();
+    }
+
+    await userModel.storeUserInLocalStorage();
+
+    return userModel;
   }
 
   @override

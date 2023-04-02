@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../../../core/controllers/base/base_states.dart';
 import '../../../../core/controllers/base/common_states.dart';
@@ -34,19 +33,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, AppState> {
     }
 
     try {
-      final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: event.email,
-        password: event.password,
-      );
-
-      final userModel = UserModel(
-        name: event.name,
-        email: event.email,
-        userID: userCredential.user!.uid,
-      );
-      await userModel.storeUserInFirebase();
-      await userModel.storeUserInLocalStorage();
-
+      final userModel = await UserModel.registerWithCredentials(event.name, event.email, event.password);
       emit(SuccessfullyRegistratedUserState(userName: userModel.name));
     } on FirebaseAuthException catch (exception) {
       switch (exception.code) {
@@ -69,24 +56,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, AppState> {
     emit(RegistratingUserState());
 
     try {
-      final googleUser = await GoogleSignIn().signIn();
-      final googleAuthentication = await googleUser?.authentication;
-
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuthentication?.accessToken,
-        idToken: googleAuthentication?.idToken,
-      );
-
-      final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
-
-      final userModel = UserModel(
-        name: googleUser!.displayName!,
-        email: googleUser.email,
-        userID: userCredential.user!.uid,
-      );
-      await userModel.storeUserInFirebase();
-      await userModel.storeUserInLocalStorage();
-
+      final userModel = await UserModel.authWithGoogle();
       emit(SuccessfullyRegistratedUserState(userName: userModel.name));
     } catch (exception) {
       emit(UnableToRegisterUserState());

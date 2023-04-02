@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../../../core/controllers/base/base_states.dart';
 import '../../../../core/controllers/base/common_states.dart';
@@ -29,16 +28,7 @@ class LoginBloc extends Bloc<LoginEvent, AppState> {
     }
 
     try {
-      final authenticationService = FirebaseAuth.instance;
-
-      final userCredential = await authenticationService.signInWithEmailAndPassword(
-        email: event.email,
-        password: event.password,
-      );
-
-      final userModel = await UserModel.fromFirebase(userCredential);
-      await userModel.storeUserInLocalStorage();
-
+      final userModel = await UserModel.loginWithCredentials(event.email, event.password);
       emit(SuccessfullyAuthenticatedUserState(userName: userModel.name));
     } on FirebaseAuthException catch (exception) {
       switch (exception.code) {
@@ -64,31 +54,7 @@ class LoginBloc extends Bloc<LoginEvent, AppState> {
     emit(AuthenticatingUserState());
 
     try {
-      final googleUser = await GoogleSignIn().signIn();
-      final googleAuthentication = await googleUser?.authentication;
-
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuthentication?.accessToken,
-        idToken: googleAuthentication?.idToken,
-      );
-
-      final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
-
-      late UserModel userModel;
-
-      if (await UserModel.userExistsInFirebase(userCredential)) {
-        userModel = await UserModel.fromFirebase(userCredential);
-      } else {
-        userModel = UserModel(
-          name: googleUser!.displayName!,
-          email: googleUser.email,
-          userID: userCredential.user!.uid,
-        );
-        await userModel.storeUserInFirebase();
-      }
-
-      await userModel.storeUserInLocalStorage();
-
+      final userModel = await UserModel.authWithGoogle();
       emit(SuccessfullyAuthenticatedUserState(userName: userModel.name));
     } catch (exception) {
       emit(UnableToAuthenticateUserState());
