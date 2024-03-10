@@ -24,6 +24,7 @@ dependencies:
   uuid: ^3.0.6
   shimmer: ^2.0.0
   dartz: ^0.10.1
+  flutter_launcher_icons: ^0.13.1
 
 flutter:
   uses-material-design: true
