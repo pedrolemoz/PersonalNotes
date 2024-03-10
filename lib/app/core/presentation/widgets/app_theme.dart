@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../utils/colors.dart';
 import '../utils/typography.dart';
 
 final appTheme = ThemeData(
+  useMaterial3: false,
   backgroundColor: AppColors.white,
   scaffoldBackgroundColor: AppColors.white,
   primaryColor: AppColors.blue,
@@ -23,9 +23,5 @@ final appTheme = ThemeData(
     titleTextStyle: AppTypography.appBar(),
     centerTitle: true,
     elevation: 1,
-    systemOverlayStyle: const SystemUiOverlayStyle(
-      statusBarIconBrightness: Brightness.dark,
-      statusBarColor: AppColors.white,
-    ),
   ),
 );

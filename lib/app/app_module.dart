@@ -17,7 +17,7 @@ import 'modules/note_creation/note_creation_module.dart';
 import 'modules/note_visualization/note_visualization_module.dart';
 import 'modules/notes_listing/notes_listing_module.dart';
 
-class RootModule extends Module {
+class AppModule extends Module {
   @override
   List<Bind> get binds => [
         Bind((i) => const IdGeneratorImplementation()),
